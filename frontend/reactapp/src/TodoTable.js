@@ -5,9 +5,9 @@ export function TodoTable(props) {
     return <Table>
         <thead>
         <tr>
-            <th>ID:</th>
-            <th>Description:</th>
-            <th>Time Create:</th>
+            <th>ID</th>
+            <th>Description</th>
+            <th>Time Created</th>
             <th></th>
         </tr>
         </thead>
