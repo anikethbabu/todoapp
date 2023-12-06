@@ -32,3 +32,31 @@ then once you are in the container bash run
 ```
 psql -h localhost -U testuser
 ``` 
+```
+CREATE database tododb;
+```
+To see if the database is created run:
+```
+\l
+```
+## Running the application
+To run the app go to the app directory and run:
+```
+python manage.py runserver
+``````
+Once the server is running you can visit the link 127.0.0.1:8000/api/docs to view the browsable api docs and test the endpoints.
+If you want to test in the terminal you can use curl. You can post with the command below:
+```
+curl -X 'POST' \
+  'http://127.0.0.1:8000/todo/' \
+  -d '{
+  "description": "Test Description"
+}'
+```
+and view the todo list with this command:
+```
+curl -X 'GET' \
+  'http://127.0.0.1:8000/todo/'
+```
+
+
