@@ -3,54 +3,19 @@ import axios from "axios"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as PropTypes from "prop-types";
 import {TodoTable} from "./TodoTable";
-import {Button, Form, Modal} from "react-bootstrap";
+import CreateModal from "./Components/CreateModal";
+import UpdateModal from "./Components/UpdateModal";
+import {Button} from "react-bootstrap";
 
 TodoTable.propTypes = {
     data: PropTypes.arrayOf(PropTypes.any),
     callbackfn: PropTypes.func
 };
 
-function CreateModal({buttonFunction}) {
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    const handleSubmit = (e) => {
-        const form = e.target
-        const formData = new FormData(form);
-        e.preventDefault()
-        buttonFunction(formData.get("description"))
-
-    }
-    return (
-        <>
-            <Button variant="primary" onClick={handleShow}>
-                Create Todo
-            </Button>
-
-            <Modal show={show} onHide={handleClose} animation={false}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Enter your Description in the TextBox</Modal.Title>
-                </Modal.Header>
-                <Form onSubmit={handleSubmit}>
-                <Modal.Body>
-                    <Form.Control as="textarea" name="description"></Form.Control>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                    <Button variant="primary" type="submit" value="submit" >
-                        Save Changes
-                    </Button>
-                </Modal.Footer>
-                </Form>
-            </Modal>
-        </>
-    );
-}
 
 function App() {
-    const [data, setData] = useState([])
+    const [data, setData] = useState([]);
+    const [isEditing, setIsEditing] = useState({});
     const getTodoList = () => {
         axios
             .get("http://127.0.0.1:8000/todo/")
@@ -72,9 +37,9 @@ function App() {
                 })
         };
         return (
-            <button onClick={handleDelete}>
+            <Button onClick={handleDelete}>
                 Delete
-            </button>
+            </Button>
         )
     }
     const CreateTodo = () => {
@@ -92,10 +57,28 @@ function App() {
         }
         return (
             <>
-            <CreateModal buttonFunction={handleCreate} />
+                <CreateModal buttonFunction={handleCreate}/>
             </>
         )
     }
+
+    const UpdateTodo = ({id}, {description}) => {
+        const handleUpdate = (description, id) => {
+            axios
+                .put(`http://localhost:8000/todo/${id}/`, {
+                    description: description
+                }).then(() => {
+                getTodoList();
+            })
+                .catch(error => {
+                    console.log(error);
+                })
+        }
+        return (
+            <UpdateModal buttonFunction={handleUpdate} id={id} placeholder={description}></UpdateModal>
+        )
+    }
+
 
     return (
         <div className='container'>
@@ -108,6 +91,7 @@ function App() {
                         <td>{todo.description}</td>
                         <td>{todo.created_at}</td>
                         <td><DeleteButton id={todo.id}></DeleteButton></td>
+                        <td><UpdateTodo id={todo.id} description={todo.description}></UpdateTodo></td>
                     </tr>
                 }}/>
             </div>

@@ -15,7 +15,7 @@ class TodoViewSet(mixins.CreateModelMixin,
                   mixins.RetrieveModelMixin,
                   viewsets.GenericViewSet):
     """Manage todo in the database."""
-    queryset = Todo.objects.all()
+    queryset = Todo.objects.all().order_by('id')
     serializer_class = TodoSerializer
 
 
